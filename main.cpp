@@ -1,18 +1,15 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <QDebug>
+#include <QtGui/QGuiApplication>
+#include <QtQml/QQmlApplicationEngine>
+#include <QtGui/QFont>
+#include <QtGui/QFontDatabase>
 
-int main(int argc, char *argv[])
-{
-    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
-
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
-    QGuiApplication app(argc, argv);
-
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
+int main(int argc, char **argv) {
+    QGuiApplication application(argc, argv);
+    QQmlApplicationEngine engine(QUrl("qrc:main.qml"));
+    if (engine.rootObjects().isEmpty()){
         return -1;
-
-    return app.exec();
+    }
+    qDebug() << "Hello Worlds!";
+    return application.exec();
 }
