@@ -28,13 +28,7 @@ Window{
         id: gauges
         spacing: root.width * .15
         anchors.centerIn: parent
-        Keys.onSpacePressed: accelerating = true
-        Keys.onReleased: {
-            if (event.key === Qt.Key_Space) {
-                speedometer.accelerating   = false;
-                event.accepted = true;
-            }
-        }
+
         CircularGauge {
             id: tachometer
             tickmarksVisible: true
@@ -54,13 +48,21 @@ Window{
 
         CircularGauge{
             id:speedometer
+            //controls
+            value: accelerating ? maximumValue: 0
+            property bool accelerating: false
+            Keys.onSpacePressed: accelerating = true
+            Keys.onReleased: {
+                if (event.key === Qt.Key_Space) {
+                    accelerating   = false;
+                    event.accepted = true;
+                }
+            }
+
             anchors.verticalCenter: parent.verticalCenter
             width: height
             maximumValue: 150
             height: root.height * 0.5
-            //controls
-            value: accelerating ? maximumValue: 0
-            property bool accelerating: false
             //styling
             style: CircularGaugeStyle {
                 labelInset: outerRadius * 0.2
@@ -70,7 +72,6 @@ Window{
                 minimumValueAngle: -125
 
             }
-
             CircularGauge {
                 id: fuelGauge
                 maximumValue: 1
@@ -82,12 +83,11 @@ Window{
                 style: CircularGaugeStyle {
                     minimumValueAngle: 215
                     maximumValueAngle: 145
-                    tickmarkStepSize: .25
-                    minorTickmark: null
+                    tickmarkStepSize: .5
+                    minorTickmarkCount: 1
                     tickmarkLabel: Text {
                         text: styleData.value === 1? 'F':
-                              styleData.value === (0.5)? "1/2":
-                              styleData.value === 0? 'E':''
+                              styleData.value === (0.5)? "1/2":'E'
                         color: styleData.value ===0? "red":"white"
                     }
                 }
@@ -118,7 +118,19 @@ Window{
                     minimumValueAngle: -125
                     maximumValueAngle: 125
                 }
-            }
+
+                Text {
+                    id: text1
+                    x: 183
+                    y: 196
+                    width: 43
+                    height: 20
+                    color: "#ffffff"
+                    text: qsTr("MPH")
+                    font.family: "Times New Roman"
+                    font.pixelSize: 12
+                }
+            }//*/
         }
     }
 }
