@@ -1,6 +1,5 @@
-import QtQuick 2.2
-import QtQuick.Window 2.1
-import QtQuick.Controls 2.2
+import QtQuick 2.9
+import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Extras 1.4
 
@@ -44,34 +43,54 @@ Window{
             }
 
             anchors.verticalCenter: parent.verticalCenter
-        }
 
+        }
+        //*/
         CircularGauge{
             id:speedometer
+            Text {
+                id: speedometerLabel
+                x: 231
+                y: 247
+                width: 43
+                height: 20
+                color: "#ffffff"
+                text: qsTr("MPH")
+                font.family: "Times New Roman"
+                font.pixelSize: 12
+            }
             //controls
-            value: accelerating ? maximumValue: 0
             property bool accelerating: false
+            value: accelerating ? maximumValue: 0
             Keys.onSpacePressed: accelerating = true
             Keys.onReleased: {
-                if (event.key === Qt.Key_Space) {
+                if (Qt.Key_Space === event.key) {
                     accelerating   = false;
                     event.accepted = true;
                 }
             }
-
+            //animation *derp*
+            Component.onCompleted: forceActiveFocus()
+            Behavior on value {
+                NumberAnimation {
+                    duration: 1000
+                }
+            }
+            //placement
             anchors.verticalCenter: parent.verticalCenter
             width: height
             maximumValue: 150
             height: root.height * 0.5
             //styling
             style: CircularGaugeStyle {
-                labelInset: outerRadius * 0.2
+                labelInset: outerRadius * 0.15
                 tickmarkStepSize: 20
                 minorTickmarkCount: 3
                 maximumValueAngle: 125
                 minimumValueAngle: -125
 
             }
+            //fuel subgauge
             CircularGauge {
                 id: fuelGauge
                 maximumValue: 1
@@ -88,20 +107,22 @@ Window{
                     tickmarkLabel: Text {
                         text: styleData.value === 1? 'F':
                               styleData.value === (0.5)? "1/2":'E'
-                        color: styleData.value ===0? "red":"white"
+                        color:styleData.value === 0? "red":"white"
                     }
                 }
             }
 
+            //kph sub gauge
             CircularGauge {
                 id:subspeedometer
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width *.7
-                height: parent.height *.7
+                width: parent.width *.75
+                height: parent.height *.75
                 maximumValue: 240
                 style: CircularGaugeStyle {
                     needle: null
+                    labelInset: outerRadius * 0.125
                     tickmarkLabel: Text {
                         text: styleData.value
                         color:"grey"
@@ -120,16 +141,15 @@ Window{
                 }
 
                 Text {
-                    id: text1
-                    x: 183
-                    y: 196
-                    width: 43
-                    height: 20
-                    color: "#ffffff"
-                    text: qsTr("MPH")
-                    font.family: "Times New Roman"
+                    id: kphMeterlabel
+                    x: 160
+                    y: 175
+                    text: qsTr("KPH")
+                    color: "grey"
                     font.pixelSize: 12
                 }
+
+
             }//*/
         }
     }
